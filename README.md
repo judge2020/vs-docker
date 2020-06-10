@@ -14,6 +14,14 @@ Click the below tags to be taken to their respective Dockerfile. You can see the
 
 * [cpp](cpp.Dockerfile)
 
+All tags include:
+
+* chocolatey with `allowGlobalConfirmation` enabled (no need to confirm installation).
+* * Installed via chocolatey:
+* * `git`
+* * `ninja`
+* All powershell aliases, such as `wget`, `curl`, `ls`, etc.
+
 all tags allow a suffix of `-node` to include node.js v12 LTS.
 
 

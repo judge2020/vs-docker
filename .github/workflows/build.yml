@@ -7,19 +7,31 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                name: ['cpp', 'cpp-node']
+                name: ['cpp']
+                node: ['yes', 'no']
         steps:
             - uses: actions/checkout@v2
             - name: login to Docker Hub
               if: github.repository == 'judge2020/vs-docker'
               run: echo "${{ secrets.DOCKER_HUB_TOKEN }}" | docker login -u judge2020vsdocker --password-stdin
             - name: Build images
+              environment:
+                NODE: ${{ matrix.node }}
               run: |
                 docker build -t base -f base.Dockerfile .
+                if ($env:NODE -eq "yes") {
+                  docker build -t base -f node.Dockerfile .
+                }
                 docker build -t ${{ matrix.name }} -f ${{ matrix.name }}.Dockerfile .
             - name: Push images
               if: github.repository == 'judge2020/vs-docker'
               run: |
-                docker tag ${{ matrix.name }} judge2020/vs-docker:${{ matrix.name }}
-                docker tag ${{ matrix.name }} judge2020/vs-docker:${{ matrix.name }}-$([int][double]::Parse((Get-Date -UFormat %s)))
+                if ($env:NODE -eq "yes") {
+                  docker tag ${{ matrix.name }} judge2020/vs-docker:${{ matrix.name }}-node
+                  docker tag ${{ matrix.name }} judge2020/vs-docker:${{ matrix.name }}-node-$([int][double]::Parse((Get-Date -UFormat %s)))
+                }
+                else {
+                  docker tag ${{ matrix.name }} judge2020/vs-docker:${{ matrix.name }}
+                  docker tag ${{ matrix.name }} judge2020/vs-docker:${{ matrix.name }}-$([int][double]::Parse((Get-Date -UFormat %s)))
+                }
                 docker push judge2020/vs-docker
