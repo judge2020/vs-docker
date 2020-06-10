@@ -20,9 +20,8 @@ All tags include:
 * * Installed via chocolatey:
 * * `git`
 * * `ninja`
+* * `nodejs` (LTS version via `nodejs-lts`)
 * All powershell aliases, such as `wget`, `curl`, `ls`, etc.
-
-all tags allow a suffix of `-node` to include node.js v12 LTS.
 
 
 ### Issues

@@ -18,3 +18,4 @@ RUN powershell Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.Ser
 RUN choco feature enable -n=allowGlobalConfirmation
 RUN choco install ninja --force --force-dependencies
 RUN choco install git --force --force-dependencies
+RUN choco install nodejs-lts --force --force-dependencies

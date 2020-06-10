@@ -8,7 +8,6 @@ jobs:
             fail-fast: false
             matrix:
                 name: ['cpp']
-                node: ['yes', 'no']
         steps:
             - uses: actions/checkout@v2
             - name: login to Docker Hub
@@ -19,19 +18,10 @@ jobs:
                 NODE: ${{ matrix.node }}
               run: |
                 docker build -t base -f base.Dockerfile .
-                if ($env:NODE -eq "yes") {
-                  docker build -t base -f node.Dockerfile .
-                }
                 docker build -t ${{ matrix.name }} -f ${{ matrix.name }}.Dockerfile .
             - name: Push images
               if: github.repository == 'judge2020/vs-docker'
               run: |
-                if ($env:NODE -eq "yes") {
-                  docker tag ${{ matrix.name }} judge2020/vs-docker:${{ matrix.name }}-node
-                  docker tag ${{ matrix.name }} judge2020/vs-docker:${{ matrix.name }}-node-$([int][double]::Parse((Get-Date -UFormat %s)))
-                }
-                else {
-                  docker tag ${{ matrix.name }} judge2020/vs-docker:${{ matrix.name }}
-                  docker tag ${{ matrix.name }} judge2020/vs-docker:${{ matrix.name }}-$([int][double]::Parse((Get-Date -UFormat %s)))
-                }
+                docker tag ${{ matrix.name }} judge2020/vs-docker:${{ matrix.name }}
+                docker tag ${{ matrix.name }} judge2020/vs-docker:${{ matrix.name }}-$([int][double]::Parse((Get-Date -UFormat %s)))
                 docker push judge2020/vs-docker
