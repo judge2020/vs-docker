@@ -15,7 +15,7 @@ jobs:
               if: github.repository == 'judge2020/vs-docker'
               run: echo "${{ secrets.DOCKER_HUB_TOKEN }}" | docker login -u judge2020vsdocker --password-stdin
             - name: Build images
-              environment:
+              env:
                 NODE: ${{ matrix.node }}
               run: |
                 docker build -t base -f base.Dockerfile .
