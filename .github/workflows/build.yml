@@ -1,0 +1,23 @@
+name: Build images
+on: push
+
+jobs:
+    build:
+        runs-on: windows-latest
+        strategy:
+            matrix:
+                name: ['cpp', 'cpp-node']
+        steps:
+            - uses: actions/checkout@v2
+            - name: login to Docker Hub
+              if: github.repository == judge2020/vs-docker
+              run: echo "${{ secrets.DOCKER_HUB_TOKEN }}" | docker login -u judge2020vsdocker --password-stdin
+            - name: Build images
+              run: |
+                docker build -t base --dockerfile=base.Dockerfile
+                docker build -t ${{ matrix.name }} --dockerfile=${{ matrix.name }}.Dockerfile
+            - name: Push images
+              run: |
+                docker tag ${{ matrix.name }} judge2020/vs-docker:${{ matrix.name }}
+                docker tag ${{ matrix.name }} judge2020/vs-docker:${{ matrix.name }}-$([int][double]::Parse((Get-Date -UFormat %s)))
+                docker push judge2020/vs-docker
